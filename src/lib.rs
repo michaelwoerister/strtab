@@ -279,6 +279,13 @@ impl Clone for InternedString {
 }
 
 
+impl ::std::hash::Hash for InternedString {
+    fn hash(&self, state: &mut ::std::hash::sip::SipState) {
+        (self.entry_ptr as uint).hash(state);
+    }
+}
+
+
 //=-------------------------------------------------------------------------------------------------
 // Table
 //=-------------------------------------------------------------------------------------------------
@@ -486,7 +493,7 @@ fn stress_test() {
         futures.push(future);
     }
 
-    for future in futures.move_iter() {
+    for future in futures.into_iter() {
         future.unwrap();
     }
 
