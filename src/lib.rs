@@ -21,6 +21,8 @@
 //! This package implements a global string table, allowing to unique strings
 //! in a threadsafe way.
 
+#![feature(default_type_params)]
+
 use std::collections::HashMap;
 use std::sync::{Once, ONCE_INIT, Mutex, MutexGuard};
 use std::sync::atomics::{AtomicUint, SeqCst};
@@ -278,10 +280,9 @@ impl Clone for InternedString {
     }
 }
 
-
-impl ::std::hash::Hash for InternedString {
-    fn hash(&self, state: &mut ::std::hash::sip::SipState) {
-        (self.entry_ptr as uint).hash(state);
+impl<S: ::std::hash::Writer> ::std::hash::Hash<S> for InternedString {
+    fn hash(&self, hash_state: &mut S) {
+        (self.entry_ptr as uint).hash(hash_state);
     }
 }
 
@@ -503,7 +504,7 @@ fn stress_test() {
         let mut s = String::with_capacity(length);
 
         for _ in range(0, length) {
-            s.push_char(rand::random::<char>());
+            s.push(rand::random::<char>());
         }
 
         return s;
