@@ -155,7 +155,7 @@ impl<'a> Equiv<TableKey> for LookupKey<'a> {
 //=-------------------------------------------------------------------------------------------------
 // InternedString
 //=-------------------------------------------------------------------------------------------------
-#[deriving(Show, Eq, PartialEq)]
+#[deriving(Eq, PartialEq)]
 #[allow(raw_pointer_deriving)]
 pub struct InternedString {
     entry_ptr: *mut StringTableEntry
@@ -283,6 +283,12 @@ impl Clone for InternedString {
 impl<S: ::std::hash::Writer> ::std::hash::Hash<S> for InternedString {
     fn hash(&self, hash_state: &mut S) {
         (self.entry_ptr as uint).hash(hash_state);
+    }
+}
+
+impl ::std::fmt::Show for InternedString {
+    fn fmt(&self, formatter: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        self.deref().fmt(formatter)
     }
 }
 
